@@ -15,19 +15,17 @@ dependencies {
     compile "org.apache.hadoop:hadoop-mapreduce-client-jobclient:$hadoopVersion"
 }
 
-task downloadHadoop(type: Download) {
+task downloadHadoop(type: Download, group: 'hadoop') {
     src "http://apache-mirror.rbc.ru/pub/apache/hadoop/common/hadoop-$hadoopVersion/hadoop-${hadoopVersion}.tar.gz"
     dest "$projectDir/.hadoop/hadoop-${hadoopVersion}.tar.gz"
 }
 
-task untarHadoop << {
-    copy {
-        from tarTree(resources.gzip("$projectDir/.hadoop/hadoop-${hadoopVersion}.tar.gz"))
-        into "$projectDir/.hadoop/"
-    }
+task untarHadoop(type: Copy, group: 'hadoop') {
+    from tarTree(resources.gzip("$projectDir/.hadoop/hadoop-${hadoopVersion}.tar.gz"))
+    into "$projectDir/.hadoop/"
 }
 
-task wordCount(type: Exec) {
+task wordCount(type: Exec, group: 'hadoop') {
     environment JAVA_HOME: System.getProperty("java.home")
     commandLine "$projectDir/.hadoop/hadoop-${hadoopVersion}/bin/hadoop",
             'jar',
